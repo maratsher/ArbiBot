@@ -3,6 +3,7 @@
 """
 import time
 
+from celery import Celery
 from aiogram import Dispatcher
 
 from bot.api import _base
@@ -21,3 +22,12 @@ print('Server connection established!')
 
 bot = BotWrapper(token=base_config.BOT_TOKEN)
 dp = Dispatcher(bot)
+
+sender = Celery(
+    'bot',
+    broker=f'redis://:{base_config.REDIS_PASSWORD}@{base_config.REDIS_HOST}:{base_config.REDIS_PORT}',
+    backend=f'redis://:{base_config.REDIS_PASSWORD}@{base_config.REDIS_HOST}:{base_config.REDIS_PORT}',
+    include=['bot.tasks.server_notification']
+)
+
+sender.conf.update(result_expires=3600)
