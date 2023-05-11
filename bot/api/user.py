@@ -16,7 +16,8 @@ async def add_user(telegram_id: str):
     """
     response, _ = await _base.request(
         method='post',
-        url=f'{base_config.API_URL}{ac.USERS_API}/{telegram_id}'
+        url=f'{base_config.API_URL}{ac.USERS_API}',
+        json={'telegram_id': telegram_id}
     )
     return response.status == 200
 
