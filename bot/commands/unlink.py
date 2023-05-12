@@ -16,5 +16,5 @@ async def unlink(message: types.Message):
     """
     Функция обработки команды /unlink
     """
-    success = await user_api.delete_telegram(telegram_id=str(message.chat.id))
+    success = await user_api.delete_user(telegram_id=str(message.chat.id))
     await message.answer(text=mc.UNLINK_SUCCESS if success else mc.ALREADY_UNLINKED, parse_mode=types.ParseMode.HTML)

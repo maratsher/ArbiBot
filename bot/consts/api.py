@@ -1,5 +1,6 @@
 """
 Модуль с константами API.
 """
-PING_API = '/api/ping'
-USERS_API = '/api/users'
+PING = '/api/ping'
+USERS = '/api/users'
+COINS = '/api/coins'

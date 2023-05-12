@@ -5,6 +5,7 @@ import time
 
 from celery import Celery
 from aiogram import Dispatcher
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 from bot.api import _base
 from bot.consts import main as mc
@@ -21,7 +22,8 @@ print('Server connection established!')
 
 
 bot = BotWrapper(token=base_config.BOT_TOKEN)
-dp = Dispatcher(bot)
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage)
 
 sender = Celery(
     'bot',

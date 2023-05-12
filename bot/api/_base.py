@@ -56,7 +56,7 @@ def ping_server() -> bool:
     :return: bool
     """
     try:
-        res = requests.get(f'{base_config.API_URL}{ac.PING_API}')
+        res = requests.get(f'{base_config.API_URL}{ac.PING}')
         if res.status_code == 200:
             return True
         print(f'Server {base_config.API_URL} connection not established..')
