@@ -55,9 +55,9 @@ async def settings(message: types.Message):
     )
 
     settings_info = mc.SETTINGS_INFO.format(
-        base_coin_name=f"{user.base_coin.coin_name} ({user.base_coin.coin_ticker})",
-        volume=f"{user.volume} {user.base_coin.coin_ticker}",
-        threshold=f"{user.threshold} {user.base_coin.coin_ticker}"
+        base_coin_name=f"{user.base_coin.name} ({user.base_coin.ticker})",
+        volume=f"{user.volume} {user.base_coin.ticker}",
+        threshold=f"{user.threshold} {user.base_coin.ticker}"
     )
 
     text = f"{mc.SETTINGS_TITLE}{mc.LINE}{settings_info}"
@@ -75,7 +75,7 @@ async def chose_new_base_coin(message: types.Message):
 
     for coin in coins:
         kb.insert(types.InlineKeyboardButton(
-            coin.coin_ticker, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_BASE_COIN}:{coin.id}'
+            coin.ticker, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_BASE_COIN}:{coin.id}'
         ))
 
     kb.add(types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}'))

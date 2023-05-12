@@ -7,5 +7,5 @@ from .base import APIBase
 class CoinInDb(APIBase):
     id: int
 
-    coin_name: str
-    coin_ticker: str
+    name: str
+    ticker: str
