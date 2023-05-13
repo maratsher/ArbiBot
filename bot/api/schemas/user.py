@@ -21,6 +21,10 @@ class UserCreate(APIBase):
     telegram_id: str = Field(...)
 
 
+class UserBundleAdd(APIBase):
+    bundle_id: int = Field(..., ge=1, le=db_config.MAX_LEN_ID)
+
+
 class UserBaseCoinUpdate(APIBase):
     telegram_id: str = Field(...)
 

@@ -3,7 +3,7 @@
 """
 from aiogram import types
 
-from . import settings
+from . import settings, bundles
 from .. import dp
 from ..api import user as user_api
 from ..consts import messages as mc, buttons as bc
@@ -26,8 +26,8 @@ async def start_menu(message: types.Message, edit: bool = False):
     :param edit: Изменить сообщение.
     """
     kb = types.InlineKeyboardMarkup(row_width=1).add(
-        types.InlineKeyboardButton(bc.BUNDLES, callback_data=f'{MODULE_NAME}:{Steps.BUNDLES}'),
         types.InlineKeyboardButton(bc.ARBI_EVENTS, callback_data=f'{MODULE_NAME}:{Steps.ARBI_EVENTS}'),
+        types.InlineKeyboardButton(bc.BUNDLES, callback_data=f'{MODULE_NAME}:{Steps.BUNDLES}'),
         types.InlineKeyboardButton(bc.SETTINGS, callback_data=f'{MODULE_NAME}:{Steps.SETTINGS}')
     )
 
@@ -53,9 +53,9 @@ async def callback(callback_query: types.CallbackQuery):
     """
     callback_info = callback_query.data.replace(f'{MODULE_NAME}:', '')
 
-    if callback_info == Steps.BUNDLES:
+    if callback_info == Steps.ARBI_EVENTS:
         pass
-    elif callback_info == Steps.ARBI_EVENTS:
-        pass
+    elif callback_info == Steps.BUNDLES:
+        await bundles.bundles_menu(message=callback_query.message)
     elif callback_info == Steps.SETTINGS:
         await settings.settings(message=callback_query.message)

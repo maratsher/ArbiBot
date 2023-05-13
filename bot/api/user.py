@@ -20,15 +20,17 @@ async def add_user(telegram_id: str):
     return response.status == 200
 
 
-async def delete_user(telegram_id: str):
+async def add_user_bundle(telegram_id: str, data: schemas.UserBundleAdd):
     """
-    Функция отвязки telegram от пользователя.
+    Функция привязки telegram к пользователю.
 
     :param telegram_id: идентификатор telegram
+    :param data: схема
     """
     response, _ = await _base.request(
-        method='delete',
-        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}',
+        method='post',
+        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}/bundle',
+        json=data.dict()
     )
     return response.status == 200
 
@@ -47,6 +49,21 @@ async def get_user(telegram_id: str) -> schemas.UserInDb | None:
     )
     if user:
         return schemas.UserInDb(**user)
+
+
+async def get_user_bundles(telegram_id: str) -> list[schemas.BundleInDb] | None:
+    """
+    Функция получения списка связок пользователя
+
+    :param telegram_id: идентификатор telegram
+
+    :return: list[schemas.BundleInDb]
+    """
+    _, bundles = await _base.request(
+        method='get',
+        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}/bundles'
+    )
+    return [schemas.BundleInDb(**bundle) for bundle in bundles]
 
 
 async def update_base_coin(data: schemas.UserBaseCoinUpdate):
@@ -87,5 +104,33 @@ async def update_threshold(data: schemas.UserThresholdUpdate):
         method='put',
         url=f'{base_config.API_URL}{ac.USERS}/threshold',
         json=data.dict()
+    )
+    return response.status == 200
+
+
+async def delete_user(telegram_id: str):
+    """
+    Функция отвязки telegram от пользователя.
+
+    :param telegram_id: идентификатор telegram
+    """
+    response, _ = await _base.request(
+        method='delete',
+        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}',
+    )
+    return response.status == 200
+
+
+async def delete_user_bundle(telegram_id: str, bundle_id: int):
+    """
+    Функция отвязки telegram от пользователя.
+
+    :param telegram_id: идентификатор telegram
+    :param bundle_id: идентификатор связки
+    """
+    response, _ = await _base.request(
+        method='delete',
+        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}/bundle',
+        params={'bundle_id': bundle_id}
     )
     return response.status == 200

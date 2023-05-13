@@ -9,6 +9,8 @@ from ..consts import api as ac
 async def get_coins() -> list[schemas.CoinInDb] | None:
     """
     Функция получения списка монет
+
+    :return: list[schemas.CoinInDb]
     """
     _, coins = await _base.request(
         method='get',
