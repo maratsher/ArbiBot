@@ -3,7 +3,7 @@
 """
 from aiogram import types
 
-from . import settings, bundles, arbi_events
+from . import settings, bundles, bundles_rating, my_arbi_events
 from .. import dp
 from ..api import user as user_api
 from ..consts import messages as mc, buttons as bc
@@ -13,8 +13,9 @@ MODULE_NAME = 'start'
 
 
 class Steps:
+    BUNDLE_RATING = 'bundles_rating'
+    MY_ARBI_EVENTS = 'my_arbi_events'
     BUNDLES = 'bundles'
-    ARBI_EVENTS = 'arbi_events'
     SETTINGS = 'settings'
 
 
@@ -26,7 +27,8 @@ async def start_menu(message: types.Message, edit: bool = False):
     :param edit: Изменить сообщение.
     """
     kb = types.InlineKeyboardMarkup(row_width=1).add(
-        types.InlineKeyboardButton(bc.ARBI_EVENTS, callback_data=f'{MODULE_NAME}:{Steps.ARBI_EVENTS}'),
+        types.InlineKeyboardButton(bc.BUNDLE_RATING, callback_data=f'{MODULE_NAME}:{Steps.BUNDLE_RATING}'),
+        types.InlineKeyboardButton(bc.MY_ARBI_EVENTS, callback_data=f'{MODULE_NAME}:{Steps.MY_ARBI_EVENTS}'),
         types.InlineKeyboardButton(bc.BUNDLES, callback_data=f'{MODULE_NAME}:{Steps.BUNDLES}'),
         types.InlineKeyboardButton(bc.SETTINGS, callback_data=f'{MODULE_NAME}:{Steps.SETTINGS}')
     )
@@ -55,9 +57,11 @@ async def callback(callback_query: types.CallbackQuery):
     """
     callback_info = callback_query.data.replace(f'{MODULE_NAME}:', '')
 
-    if callback_info == Steps.ARBI_EVENTS:
-        await arbi_events.arbi_events_menu(message=callback_query.message)
+    if callback_info == Steps.BUNDLE_RATING:
+        await bundles_rating.bundles_rating_menu(message=callback_query.message)
+    elif callback_info == Steps.MY_ARBI_EVENTS:
+        await my_arbi_events.my_arbi_events_menu(message=callback_query.message)
     elif callback_info == Steps.BUNDLES:
         await bundles.bundles_menu(message=callback_query.message)
     elif callback_info == Steps.SETTINGS:
-        await settings.settings(message=callback_query.message)
+        await settings.settings_menu(message=callback_query.message)

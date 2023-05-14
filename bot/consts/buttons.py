@@ -7,8 +7,8 @@ BUNDLES = 'Связки'
 ADD_BUNDLE = 'Добавить'
 DELETE_BUNDLE = 'Удалить'
 
-ARBI_EVENTS = 'Арбитражные ситуации'
-MY_BUNDLES = 'Мои связки'
+BUNDLE_RATING = 'Рейтинг связок за день'
+MY_ARBI_EVENTS = 'Мои арбитражные ситуации'
 
 SETTINGS = 'Настройки'
 UPDATE_BASE_COIN = 'Изменить монету'

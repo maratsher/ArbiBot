@@ -41,7 +41,7 @@ class SettingsForm(StatesGroup):
     get_threshold = State()
 
 
-async def settings(message: types.Message):
+async def settings_menu(message: types.Message):
     """
     Функция обработки меню настроек
     """
@@ -100,7 +100,7 @@ async def get_volume(message: types.Message, state: FSMContext):
     if fullmatch(rc.FLOAT_REGEX, volume):
         volume = volume.replace(',', '.')
         await user_api.update_volume(data=schemas.UserVolumeUpdate(telegram_id=str(telegram_id), volume=volume))
-        await settings(message=data[StorageDataFields.LAST_MESSAGE])
+        await settings_menu(message=data[StorageDataFields.LAST_MESSAGE])
         await state.finish()
     else:
         text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_VOLUME}\n\n{ec.INPUT_FORMAT.format(mc.FLOAT_FORMAT)}"
@@ -130,7 +130,7 @@ async def get_threshold(message: types.Message, state: FSMContext):
         await user_api.update_threshold(
             data=schemas.UserThresholdUpdate(telegram_id=str(telegram_id), threshold=threshold)
         )
-        await settings(message=data[StorageDataFields.LAST_MESSAGE])
+        await settings_menu(message=data[StorageDataFields.LAST_MESSAGE])
         await state.finish()
     else:
         text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_THRESHOLD}\n\n{ec.INPUT_FORMAT.format(mc.FLOAT_FORMAT)}"
@@ -146,7 +146,7 @@ async def get_threshold(message: types.Message, state: FSMContext):
 @dp.callback_query_handler(lambda c: c.data and c.data.startswith(MODULE_NAME), state=[SettingsForm.get_volume, None])
 async def callback(callback_query: types.CallbackQuery, state: FSMContext):
     """
-    Функция обработки нажатий на кнопки в стартовом меню
+    Функция обработки нажатий на кнопки в меню настроек
     """
     callback_info = callback_query.data.replace(f'{MODULE_NAME}:', '')
 
@@ -166,7 +166,7 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
             await user_api.update_base_coin(
                 data=schemas.UserBaseCoinUpdate(telegram_id=telegram_id, base_coin_id=base_coin_id)
             )
-            await settings(message=callback_query.message)
+            await settings_menu(message=callback_query.message)
     elif callback_info in [Steps.UPDATE_VOLUME, Steps.UPDATE_THRESHOLD]:
         text = f"{mc.SETTINGS_TITLE}{mc.LINE}" \
                f"{mc.SETTINGS_VOLUME if callback_info == Steps.UPDATE_VOLUME else mc.SETTINGS_THRESHOLD}" \

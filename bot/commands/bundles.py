@@ -60,18 +60,20 @@ async def bundles_menu(message: types.Message):
     await message.edit_text(text=text, reply_markup=kb, parse_mode=types.ParseMode.HTML)
 
 
-async def chose_bundle_coin(message: types.Message):
+async def chose_bundle_coin(message: types.Message, telegram_id: str):
     """
     Функция обработки меню выбора монеты для связки
     """
+    user = await user_api.get_user(telegram_id=telegram_id)
     coins = await coin_api.get_coins()
 
-    kb = types.InlineKeyboardMarkup(row_width=3)\
+    kb = types.InlineKeyboardMarkup(row_width=3)
 
     for coin in coins:
-        kb.insert(types.InlineKeyboardButton(
-            coin.ticker, callback_data=f'{MODULE_NAME}:{Steps.ADD_BUNDLE}:{coin.id}'
-        ))
+        if coin.id != user.base_coin.id:
+            kb.insert(types.InlineKeyboardButton(
+                coin.ticker, callback_data=f'{MODULE_NAME}:{Steps.ADD_BUNDLE}:{coin.id}'
+            ))
 
     kb.add(types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{Steps.ADD_BUNDLE}'))
 
@@ -133,6 +135,8 @@ async def callback(callback_query: types.CallbackQuery):
     """
     callback_info = callback_query.data.replace(f'{MODULE_NAME}:', '')
 
+    telegram_id = str(callback_query.message.chat.id)
+
     if Steps.BACK in callback_info:
         if callback_info == Steps.BACK:
             await start.start_menu(message=callback_query.message, edit=True)
@@ -140,11 +144,10 @@ async def callback(callback_query: types.CallbackQuery):
             await bundles_menu(message=callback_query.message)
     elif Steps.ADD_BUNDLE in callback_info:
         if callback_info == Steps.ADD_BUNDLE:
-            await chose_bundle_coin(message=callback_query.message)
+            await chose_bundle_coin(message=callback_query.message, telegram_id=telegram_id)
         else:
             callback_info = callback_info.replace(f'{Steps.ADD_BUNDLE}:', '')
             if ':' in callback_info:
-                telegram_id = str(callback_query.message.chat.id)
                 coin_id, bundle_id = map(int, callback_info.split(':'))
                 await user_api.add_user_bundle(telegram_id=telegram_id, data=schemas.UserBundleAdd(bundle_id=bundle_id))
                 await bundles_menu(message=callback_query.message)
@@ -152,7 +155,6 @@ async def callback(callback_query: types.CallbackQuery):
                 coin_id = int(callback_info)
                 await chose_bundle(message=callback_query.message, coin_id=coin_id)
     elif Steps.DELETE_BUNDLE in callback_info:
-        telegram_id = str(callback_query.message.chat.id)
         if callback_info == Steps.DELETE_BUNDLE:
             await chose_delete_bundle(message=callback_query.message, telegram_id=telegram_id)
         else:
