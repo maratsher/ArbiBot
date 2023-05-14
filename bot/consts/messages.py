@@ -28,7 +28,7 @@ ARBI_EVENTS_EMPTY = 'Список пуст'
 UNLINK_SUCCESS = 'Вы успешно отвязали свой telegram.'
 ALREADY_UNLINKED = 'Ваш telegram не был привязан.'
 
-NEW_EVENT_NOTIFICATION = '🆕 <b>НОВАЯ АРБИТРАЖНАЯ СИТУАЦИЯ</b>\n' \
+NEW_EVENT_NOTIFICATION = '🆕 <b>НОВАЯ АРБИТРАЖНАЯ СИТУАЦИЯ</b>' \
                          '{line}' \
                          '<b>{ticker} / {bace_coin_ticker}</b>\n' \
                          '<b>{exchange1_name}</b> (<b>{first_price:.4f}</b>) ' \
