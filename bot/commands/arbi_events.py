@@ -29,7 +29,7 @@ async def arbi_events_menu(message: types.Message):
     """
     Функция обработки меню арбитражных ситуаций
     """
-    arbi_events = await arbi_event_api.get_arbi_events()
+    arbi_events = await arbi_event_api.get_arbi_events(telegram_id=str(message.chat.id))
 
     bundle_stats = {}
 
@@ -59,6 +59,8 @@ async def arbi_events_menu(message: types.Message):
 
     if arbi_events:
         kb.add(types.InlineKeyboardButton(bc.MY_BUNDLES, callback_data=f'{MODULE_NAME}:{Steps.MY_BUNDLES}'))
+
+    if bundle_stats:
         user = await user_api.get_user(telegram_id=str(message.chat.id))
         bace_coin_ticker = user.base_coin.ticker
         for num, bundle_stat in enumerate(bundle_stats.values()):
