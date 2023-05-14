@@ -3,7 +3,7 @@
 """
 from aiogram import types
 
-from . import settings, bundles
+from . import settings, bundles, arbi_events
 from .. import dp
 from ..api import user as user_api
 from ..consts import messages as mc, buttons as bc
@@ -32,9 +32,9 @@ async def start_menu(message: types.Message, edit: bool = False):
     )
 
     if edit:
-        await message.edit_text(text=mc.START_TEXT, reply_markup=kb, parse_mode=types.ParseMode.HTML)
+        await message.edit_text(text=mc.START_TITLE, reply_markup=kb, parse_mode=types.ParseMode.HTML)
     else:
-        await message.answer(text=mc.START_TEXT, reply_markup=kb, parse_mode=types.ParseMode.HTML)
+        await message.answer(text=mc.START_TITLE, reply_markup=kb, parse_mode=types.ParseMode.HTML)
 
 
 @dp.message_handler(commands=[MODULE_NAME])
@@ -42,7 +42,9 @@ async def start(message: types.Message):
     """
     Функция обработки команды /start
     """
-    await user_api.add_user(telegram_id=str(message.chat.id))
+    success = await user_api.add_user(telegram_id=str(message.chat.id))
+    if success:
+        await message.answer(text=mc.START_TEXT, parse_mode=types.ParseMode.HTML)
     await start_menu(message=message)
 
 
@@ -54,7 +56,7 @@ async def callback(callback_query: types.CallbackQuery):
     callback_info = callback_query.data.replace(f'{MODULE_NAME}:', '')
 
     if callback_info == Steps.ARBI_EVENTS:
-        pass
+        await arbi_events.arbi_events_menu(message=callback_query.message)
     elif callback_info == Steps.BUNDLES:
         await bundles.bundles_menu(message=callback_query.message)
     elif callback_info == Steps.SETTINGS:

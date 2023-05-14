@@ -42,14 +42,14 @@ async def bundles_menu(message: types.Message):
     """
     user_bundles = await user_api.get_user_bundles(telegram_id=str(message.chat.id))
 
-    kb = types.InlineKeyboardMarkup(row_width=1).add(
+    kb = types.InlineKeyboardMarkup(row_width=2).add(
         types.InlineKeyboardButton(bc.ADD_BUNDLE, callback_data=f'{MODULE_NAME}:{Steps.ADD_BUNDLE}')
     )
 
     text = f"{mc.BUNDLES_TITLE}{mc.LINE}"
 
     if user_bundles:
-        kb.add(types.InlineKeyboardButton(bc.DELETE_BUNDLE, callback_data=f'{MODULE_NAME}:{Steps.DELETE_BUNDLE}'))
+        kb.insert(types.InlineKeyboardButton(bc.DELETE_BUNDLE, callback_data=f'{MODULE_NAME}:{Steps.DELETE_BUNDLE}'))
         for num, bundle in enumerate(user_bundles):
             text += f"<b>{num + 1}.</b> {bundle.coin.ticker} - {bundle.exchange1.name} 🔄 {bundle.exchange2.name}\n"
     else:

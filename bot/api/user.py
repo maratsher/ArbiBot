@@ -66,6 +66,22 @@ async def get_user_bundles(telegram_id: str) -> list[schemas.BundleInDb] | None:
     return [schemas.BundleInDb(**bundle) for bundle in bundles]
 
 
+async def get_arbi_events(telegram_id: str) -> list[schemas.ArbiEventInDb] | None:
+    """
+    Функция получения списка арбитражных ситуаций
+
+    :param telegram_id: идентификатор telegram
+
+    :return: list[schemas.ArbiEventInDb]
+    """
+    _, arbi_events = await _base.request(
+        method='get',
+        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}/arbi_events'
+    )
+    return [schemas.ArbiEventInDb(**arbi_event) for arbi_event in arbi_events]
+
+
+
 async def update_base_coin(data: schemas.UserBaseCoinUpdate):
     """
     Функция обновления расчетной монеты пользователя.

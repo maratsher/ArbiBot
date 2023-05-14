@@ -4,10 +4,11 @@
 BACK = 'Назад'
 
 BUNDLES = 'Связки'
-ADD_BUNDLE = 'Добавить связку'
-DELETE_BUNDLE = 'Удалить связку'
+ADD_BUNDLE = 'Добавить'
+DELETE_BUNDLE = 'Удалить'
 
 ARBI_EVENTS = 'Арбитражные ситуации'
+MY_BUNDLES = 'Мои связки'
 
 SETTINGS = 'Настройки'
 UPDATE_BASE_COIN = 'Изменить монету'
