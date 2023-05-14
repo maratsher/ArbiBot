@@ -70,7 +70,7 @@ async def arbi_events_menu(message: types.Message):
                     f"{bundle.exchange1.name} 🔄 {bundle.exchange2.name}</b>\n" \
                     f"    Кол-во ситуаций: <b>{bundle_count}</b>\n" \
                     f"    Среднее время: <b>{bundle_stat['time'] / bundle_count:.2f} мин.</b>\n" \
-                    f"    Средний профит: <b>{bundle_stat['max_profit'] / bundle_count:.2f} {bace_coin_ticker}</b>"
+                    f"    Средний профит: <b>{bundle_stat['max_profit'] / bundle_count:.2f} {bace_coin_ticker}</b>\n"
     else:
         text += mc.ARBI_EVENTS_EMPTY
 
