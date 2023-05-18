@@ -71,14 +71,14 @@ async def chose_new_base_coin(message: types.Message):
     """
     coins = await coin_api.get_coins()
 
-    kb = types.InlineKeyboardMarkup(row_width=3)\
+    kb = types.InlineKeyboardMarkup(row_width=3)
 
     for coin in coins:
         kb.insert(types.InlineKeyboardButton(
             coin.ticker, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_BASE_COIN}:{coin.id}'
         ))
 
-    kb.add(types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}'))
+    kb.add(types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{MODULE_NAME}'))
 
     text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_BASE_COIN}"
 
@@ -143,7 +143,10 @@ async def get_threshold(message: types.Message, state: FSMContext):
         await state.update_data({StorageDataFields.LAST_MESSAGE: msg})
 
 
-@dp.callback_query_handler(lambda c: c.data and c.data.startswith(MODULE_NAME), state=[SettingsForm.get_volume, None])
+@dp.callback_query_handler(
+    lambda c: c.data and c.data.startswith(MODULE_NAME),
+    state=[SettingsForm.get_volume, SettingsForm.get_threshold, None]
+)
 async def callback(callback_query: types.CallbackQuery, state: FSMContext):
     """
     Функция обработки нажатий на кнопки в меню настроек
@@ -152,8 +155,12 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
 
     text, kb = None, None
 
-    if callback_info == Steps.BACK:
-        await start.start_menu(message=callback_query.message, edit=True)
+    if Steps.BACK in callback_info:
+        if callback_info == Steps.BACK:
+            await start.start_menu(message=callback_query.message, edit=True)
+        else:
+            await settings_menu(callback_query.message)
+
         current_state = await state.get_state()
         if current_state:
             await state.finish()
@@ -172,7 +179,7 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
                f"{mc.SETTINGS_VOLUME if callback_info == Steps.UPDATE_VOLUME else mc.SETTINGS_THRESHOLD}" \
                f"\n\n{mc.INPUT_FORMAT.format(mc.FLOAT_FORMAT)}"
         kb = types.InlineKeyboardMarkup(row_width=1).add(
-            types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}')
+            types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{MODULE_NAME}')
         )
         if callback_info == Steps.UPDATE_VOLUME:
             await SettingsForm.get_volume.set()
