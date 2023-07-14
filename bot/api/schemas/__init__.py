@@ -3,7 +3,8 @@
 """
 from .user import (
     UserInDb, UserCreate, UserBundleAdd,
-    UserBaseCoinUpdate, UserThresholdUpdate, UserVolumeUpdate
+    UserBaseCoinUpdate, UserThresholdUpdate, UserVolumeUpdate,
+    UserEpsilonUpdate, UserDifferenceUpdate, UserAutoUpdate
 )
 from .coin import CoinInDb
 from .exchange import ExchangeInDb

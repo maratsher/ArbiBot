@@ -15,6 +15,9 @@ class UserInDb(APIBase):
     base_coin: CoinInDb
     threshold: float
     volume: float
+    epsilon: float
+    difference: float
+    auto: bool
 
 
 class UserCreate(APIBase):
@@ -41,3 +44,21 @@ class UserVolumeUpdate(APIBase):
     telegram_id: str = Field(...)
 
     volume: float = Field(..., gt=0, le=db_config.MAX_VOLUME)
+
+
+class UserEpsilonUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    epsilon: float = Field(..., gt=0, le=db_config.MAX_EPSILON)
+
+
+class UserDifferenceUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    difference: float = Field(..., gt=0, le=db_config.MAX_DIFFERENCE)
+
+
+class UserAutoUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    auto: bool = Field(...)

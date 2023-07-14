@@ -124,6 +124,48 @@ async def update_threshold(data: schemas.UserThresholdUpdate):
     return response.status == 200
 
 
+async def update_epsilon(data: schemas.UserEpsilonUpdate):
+    """
+    Функция обновления погрешности сравнения цен пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/epsilon',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
+async def update_difference(data: schemas.UserDifferenceUpdate):
+    """
+    Функция обновления максимально допустимого процента различия балансов пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/difference',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
+async def update_auto(data: schemas.UserAutoUpdate):
+    """
+    Функция обновления автоматической торговли пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/auto',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
 async def delete_user(telegram_id: str):
     """
     Функция отвязки telegram от пользователя.
