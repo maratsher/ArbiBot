@@ -18,6 +18,8 @@ class UserInDb(APIBase):
     epsilon: float
     difference: float
     auto: bool
+    test_api: bool
+    wait_order_minutes: int
 
 
 class UserCreate(APIBase):
@@ -62,3 +64,15 @@ class UserAutoUpdate(APIBase):
     telegram_id: str = Field(...)
 
     auto: bool = Field(...)
+
+
+class UserWaitOrderMinutesUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    wait_order_minutes: float = Field(..., gt=0, le=db_config.MAX_DIFFERENCE)
+
+
+class UserTestAPIUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    test_api: bool = Field(...)

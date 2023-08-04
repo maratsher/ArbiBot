@@ -14,6 +14,7 @@ class Database(BaseSettings):
     MAX_THRESHOLD: float = 100
     MAX_EPSILON: float = 1
     MAX_DIFFERENCE: float = 100
+    MAX_WAIT_ORDER_MINUTES: int = 3600
 
     class Config:
         case_sensitive = True

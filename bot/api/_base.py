@@ -1,6 +1,7 @@
 """
 Модуль запросов к API server
 """
+import json as json_lib
 import typing
 
 import requests
@@ -17,7 +18,8 @@ async def request(
         data: dict = None,
         params: dict = None,
         json: dict = None,
-        get_content: bool = False
+        get_content: bool = False,
+        get_error: bool = False
 ) -> (typing.Optional[ClientResponse], typing.Any):
     """
 
@@ -28,6 +30,7 @@ async def request(
     :param params: Параметры.
     :param json: Данные в формате json.
     :param get_content: Получить content.
+    :param get_error: Получить текст ошибки.
 
     :return: ClientResponse, dict
     """
@@ -43,6 +46,16 @@ async def request(
                             content += data
 
                     return response, content
+                if get_error:
+                    error_message = b"" if response.status != 200 else None
+                    if error_message is not None:
+                        async for data, _ in response.content.iter_chunks():
+                            error_message += data
+
+                    error_message = json_lib.loads(error_message.decode('utf-8'))
+                    error_message = error_message['detail']
+
+                    return response, error_message
                 result = await response.json(content_type=None) if response.status == 200 else None
                 return response, result
         except ClientConnectorError:

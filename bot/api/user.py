@@ -81,7 +81,6 @@ async def get_arbi_events(telegram_id: str) -> list[schemas.ArbiEventInDb] | Non
     return [schemas.ArbiEventInDb(**arbi_event) for arbi_event in arbi_events]
 
 
-
 async def update_base_coin(data: schemas.UserBaseCoinUpdate):
     """
     Функция обновления расчетной монеты пользователя.
@@ -158,12 +157,48 @@ async def update_auto(data: schemas.UserAutoUpdate):
 
     :param data: схема
     """
-    response, _ = await _base.request(
+    response, error = await _base.request(
         method='put',
         url=f'{base_config.API_URL}{ac.USERS}/auto',
+        json=data.dict(),
+        get_error=True
+    )
+    if response.status == 200:
+        return 0
+    elif response.status == 400:
+        return 1 if error == 'STOP_PROCESS_STARTED' else 2
+
+
+async def update_wait_order_minutes(data: schemas.UserWaitOrderMinutesUpdate):
+    """
+    Функция обновления времени на выполнение ордера пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/wait_order_minutes',
         json=data.dict()
     )
     return response.status == 200
+
+
+async def update_test_api(data: schemas.UserTestAPIUpdate) -> int:
+    """
+    Функция обновления использования тестового режима автоматической торговли пользователя.
+
+    :param data: схема
+    """
+    response, error = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/test_api',
+        json=data.dict(),
+        get_error=True
+    )
+    if response.status == 200:
+        return 0
+    elif response.status == 400:
+        return 1 if error == 'RESTART_PROCESS_STARTED' else 2
 
 
 async def delete_user(telegram_id: str):
