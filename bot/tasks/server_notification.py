@@ -8,7 +8,7 @@ from .. import bot, sender
 from ..consts import messages as mc
 
 
-async def send_message(telegram_ids: typing.List[str], data: dict):
+async def new_event_message(telegram_ids: typing.List[str], data: dict):
     direction = '➡️' if data['current_price1'] < data['current_price2'] else '⬅️'
     text = mc.NEW_EVENT_NOTIFICATION.format(
         line=mc.LINE,
@@ -25,6 +25,35 @@ async def send_message(telegram_ids: typing.List[str], data: dict):
         await bot.send_message(chat_id=telegram_id, text=text, parse_mode=types.ParseMode.HTML)
 
 
-@sender.task(name='send_notification')
-def send_notification(telegram_ids: typing.List[str], message: str):
-    asyncio.get_event_loop().run_until_complete(send_message(telegram_ids=telegram_ids, data=json.loads(message)))
+async def stop_message(telegram_id: str):
+    await bot.send_message(chat_id=telegram_id, text=mc.STOP_AUTO_NOTIFICATION, parse_mode=types.ParseMode.HTML)
+
+
+async def restart_message(telegram_id: str):
+    await bot.send_message(chat_id=telegram_id, text=mc.RESTART_AUTO_NOTIFICATION, parse_mode=types.ParseMode.HTML)
+
+
+async def profit_message(telegram_id: str, profit: float):
+    await bot.send_message(
+        chat_id=telegram_id, text=mc.PROFIT_NOTIFICATION.format(profit=profit), parse_mode=types.ParseMode.HTML
+    )
+
+
+@sender.task(name='new_event')
+def new_event(telegram_ids: typing.List[str], message: str):
+    asyncio.get_event_loop().run_until_complete(new_event_message(telegram_ids=telegram_ids, data=json.loads(message)))
+
+
+@sender.task(name='stop_auto')
+def stop_auto(telegram_id: str):
+    asyncio.get_event_loop().run_until_complete(stop_message(telegram_id=telegram_id))
+
+
+@sender.task(name='restart_auto')
+def restart_auto(telegram_id: str):
+    asyncio.get_event_loop().run_until_complete(restart_message(telegram_id=telegram_id))
+
+
+@sender.task(name='profit_auto')
+def profit_auto(telegram_id: str, profit: float):
+    asyncio.get_event_loop().run_until_complete(profit_message(telegram_id=telegram_id, profit=profit))
