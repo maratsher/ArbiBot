@@ -76,3 +76,12 @@ class UserTestAPIUpdate(APIBase):
     telegram_id: str = Field(...)
 
     test_api: bool = Field(...)
+
+
+class UserExchangeUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    exchange_id: int = Field(..., ge=1, le=db_config.MAX_LEN_ID)
+
+    api_key: str = Field(...)
+    api_secret: str = Field(...)

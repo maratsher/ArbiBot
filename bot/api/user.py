@@ -81,6 +81,35 @@ async def get_arbi_events(telegram_id: str) -> list[schemas.ArbiEventInDb] | Non
     return [schemas.ArbiEventInDb(**arbi_event) for arbi_event in arbi_events]
 
 
+async def get_exchanges(telegram_id: str) -> list[schemas.ExchangeInDb] | None:
+    """
+    Функция получения списка настроенных бирж пользователя
+
+    :param telegram_id: идентификатор telegram
+
+    :return: list[schemas.ExchangeInDb]
+    """
+    _, exchanges = await _base.request(
+        method='get',
+        url=f'{base_config.API_URL}{ac.USERS}/{telegram_id}/exchanges'
+    )
+    return [schemas.ExchangeInDb(**exchange) for exchange in exchanges]
+
+
+async def update_exchange(data: schemas.UserExchangeUpdate):
+    """
+    Функция обновления данных биржи пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/exchange',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
 async def update_base_coin(data: schemas.UserBaseCoinUpdate):
     """
     Функция обновления расчетной монеты пользователя.

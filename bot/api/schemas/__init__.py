@@ -5,9 +5,9 @@ from .user import (
     UserInDb, UserCreate, UserBundleAdd,
     UserBaseCoinUpdate, UserThresholdUpdate, UserVolumeUpdate,
     UserEpsilonUpdate, UserDifferenceUpdate, UserAutoUpdate,
-    UserWaitOrderMinutesUpdate, UserTestAPIUpdate
+    UserWaitOrderMinutesUpdate, UserTestAPIUpdate, UserExchangeUpdate
 )
 from .coin import CoinInDb
-from .exchange import ExchangeInDb
+from .exchange import ExchangeInDb, ExchangeName
 from .bundle import BundleInDb
 from .arbi_event import ArbiEventInDb

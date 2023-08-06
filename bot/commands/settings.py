@@ -18,6 +18,7 @@ from ..consts import (
 from ..api import (
     user as user_api,
     coin as coin_api,
+    exchange as exchange_api,
     schemas
 )
 from ..api.config import db_config
@@ -35,10 +36,14 @@ class Steps:
     UPDATE_DIFFERENCE = 'update_difference'
     UPDATE_WAIT_ORDER = 'update_wait_order'
     UPDATE_TEST_API = 'update_test_api'
+    UPDATE_EXCHANGES = 'update_exchanges'
     BACK = 'back'
 
 
 class StorageDataFields:
+    API_KEY = 'api_key'
+    API_SECRET = 'api_secret'
+    EXCHANGE_ID = 'exchange_id'
     LAST_MESSAGE = 'last_bot_message'
 
 
@@ -48,23 +53,36 @@ class SettingsForm(StatesGroup):
     get_epsilon = State()
     get_difference = State()
     get_wait_order_minutes = State()
+    get_api_key = State()
+    get_api_secret = State()
 
 
 async def settings_menu(message: types.Message):
     """
     Функция обработки меню настроек
     """
-    user = await user_api.get_user(telegram_id=str(message.chat.id))
+    telegram_id = str(message.chat.id)
 
-    kb = types.InlineKeyboardMarkup(row_width=1).add(
-        types.InlineKeyboardButton(
-            f'{"✅" if user.auto else "❌"} {bc.AUTO}',
-            callback_data=f'{MODULE_NAME}:{Steps.UPDATE_AUTO}:{int(not user.auto)}'
-        ),
-        types.InlineKeyboardButton(
-            f'{"✅" if user.test_api else "❌"} {bc.TEST}',
-            callback_data=f'{MODULE_NAME}:{Steps.UPDATE_TEST_API}:{int(not user.test_api)}'
-        ),
+    user = await user_api.get_user(telegram_id=telegram_id)
+
+    exchanges = await user_api.get_exchanges(telegram_id=telegram_id)
+    exchanges_success = len(exchanges) == 2
+
+    kb = types.InlineKeyboardMarkup(row_width=1)
+    if exchanges_success:
+        kb.add(
+            types.InlineKeyboardButton(
+                f'{"✅" if user.auto else "❌"} {bc.AUTO}',
+                callback_data=f'{MODULE_NAME}:{Steps.UPDATE_AUTO}:{int(not user.auto)}'
+            ),
+            types.InlineKeyboardButton(
+                f'{"✅" if user.test_api else "❌"} {bc.TEST}',
+                callback_data=f'{MODULE_NAME}:{Steps.UPDATE_TEST_API}:{int(not user.test_api)}'
+            )
+        )
+
+    kb.add(
+        types.InlineKeyboardButton(bc.UPDATE_EXCHANGES, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_EXCHANGES}'),
         types.InlineKeyboardButton(bc.UPDATE_BASE_COIN, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_BASE_COIN}'),
         types.InlineKeyboardButton(bc.UPDATE_VOLUME, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_VOLUME}'),
         types.InlineKeyboardButton(bc.UPDATE_THRESHOLD, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_THRESHOLD}'),
@@ -75,6 +93,7 @@ async def settings_menu(message: types.Message):
     )
 
     settings_info = mc.SETTINGS_INFO.format(
+        auto_info_text='' if exchanges_success else mc.SETTINGS_AUTO_INFO,
         base_coin_name=f"{user.base_coin.name} ({user.base_coin.ticker})",
         volume=f"{user.volume} {user.base_coin.ticker}",
         threshold=f"{user.threshold} {user.base_coin.ticker}",
@@ -84,6 +103,30 @@ async def settings_menu(message: types.Message):
     )
 
     text = f"{mc.SETTINGS_TITLE}{mc.LINE}{settings_info}"
+
+    await message.edit_text(text=text, reply_markup=kb, parse_mode=types.ParseMode.HTML)
+
+
+async def chose_exchange(message: types.Message):
+    """
+    Функция обработки меню выбора бирж для настройки
+    """
+    telegram_id = str(message.chat.id)
+    user_exchanges = await user_api.get_exchanges(telegram_id=telegram_id)
+    user_exchanges_ids = [exchange.id for exchange in user_exchanges]
+    exchanges = await exchange_api.get_exchanges()
+
+    kb = types.InlineKeyboardMarkup(row_width=2)
+
+    for exchange in exchanges:
+        kb.insert(types.InlineKeyboardButton(
+            f'{"✅" if exchange.id in user_exchanges_ids else "❌"} {exchange.name.value}',
+            callback_data=f'{MODULE_NAME}:{Steps.UPDATE_EXCHANGES}:{exchange.id}'
+        ))
+
+    kb.add(types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{MODULE_NAME}'))
+
+    text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_EXCHANGES}"
 
     await message.edit_text(text=text, reply_markup=kb, parse_mode=types.ParseMode.HTML)
 
@@ -261,6 +304,64 @@ async def get_wait_order_minutes(message: types.Message, state: FSMContext):
         await state.update_data({StorageDataFields.LAST_MESSAGE: msg})
 
 
+@dp.message_handler(state=SettingsForm.get_api_key)
+async def get_api_key(message: types.Message, state: FSMContext):
+    """
+    Функция получения api_key биржи
+    """
+    api_key = message.text
+
+    telegram_id = message.chat.id
+    data = await state.storage.get_data(chat=telegram_id)
+    await state.update_data({StorageDataFields.API_KEY: api_key})
+    await SettingsForm.get_api_secret.set()
+
+    exchange = await exchange_api.get_exchange(exchange_id=data[StorageDataFields.EXCHANGE_ID])
+    text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_EXCHANGES_API_SECRET.format(exchange=exchange.name.value)}"
+    kb = types.InlineKeyboardMarkup(row_width=1).add(
+        types.InlineKeyboardButton(
+            bc.BACK,
+            callback_data=f'{MODULE_NAME}:{Steps.BACK}:{Steps.UPDATE_EXCHANGES}:{data[StorageDataFields.EXCHANGE_ID]}'
+        )
+    )
+
+    await message.delete()
+
+    msg = await data[StorageDataFields.LAST_MESSAGE].edit_text(
+        text=text, reply_markup=kb, parse_mode=types.ParseMode.HTML
+    )
+    await state.update_data({StorageDataFields.LAST_MESSAGE: msg})
+
+
+@dp.message_handler(state=SettingsForm.get_api_secret)
+async def get_api_secret(message: types.Message, state: FSMContext):
+    """
+    Функция получения api_secret биржи и обновления данных
+    """
+    api_secret = message.text
+
+    telegram_id = message.chat.id
+    data = await state.storage.get_data(chat=telegram_id)
+
+    success = await user_api.update_exchange(data=schemas.UserExchangeUpdate(
+        telegram_id=telegram_id,
+        exchange_id=data[StorageDataFields.EXCHANGE_ID],
+        api_key=data[StorageDataFields.API_KEY],
+        api_secret=api_secret
+    ))
+
+    exchange = await exchange_api.get_exchange(exchange_id=data[StorageDataFields.EXCHANGE_ID])
+    if success:
+        text = mc.SETTINGS_EXCHANGES_SUCCESS.format(exchange=exchange.name.value)
+    else:
+        text = ec.SETTINGS_EXCHANGES_ERROR.format(exchange=exchange.name.value)
+
+    await message.delete()
+
+    await data[StorageDataFields.LAST_MESSAGE].answer(text=text, parse_mode=types.ParseMode.HTML)
+    await settings_menu(data[StorageDataFields.LAST_MESSAGE])
+
+
 @dp.callback_query_handler(
     lambda c: c.data and c.data.startswith(MODULE_NAME),
     state=[SettingsForm, None]
@@ -276,12 +377,35 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
     if Steps.BACK in callback_info:
         if callback_info == Steps.BACK:
             await start.start_menu(message=callback_query.message, edit=True)
+        elif Steps.UPDATE_EXCHANGES in callback_info:
+            exchange_id = int(callback_info.replace(f'{Steps.BACK}:{Steps.UPDATE_EXCHANGES}:', ''))
+            exchange = await exchange_api.get_exchange(exchange_id=exchange_id)
+            text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_EXCHANGES_API_KEY.format(exchange=exchange.name.value)}"
+            kb = types.InlineKeyboardMarkup(row_width=1).add(
+                types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{MODULE_NAME}')
+            )
+            msg = await callback_query.message.edit_text(text=text, reply_markup=kb, parse_mode=types.ParseMode.HTML)
+            await SettingsForm.get_api_key.set()
+            await state.update_data({StorageDataFields.LAST_MESSAGE: msg})
+            return
         else:
             await settings_menu(callback_query.message)
 
         current_state = await state.get_state()
         if current_state:
             await state.finish()
+    elif Steps.UPDATE_EXCHANGES in callback_info:
+        if callback_info == Steps.UPDATE_EXCHANGES:
+            await chose_exchange(message=callback_query.message)
+        else:
+            exchange_id = int(callback_info.replace(f'{Steps.UPDATE_EXCHANGES}:', ''))
+            exchange = await exchange_api.get_exchange(exchange_id=exchange_id)
+            text = f"{mc.SETTINGS_TITLE}{mc.LINE}{mc.SETTINGS_EXCHANGES_API_KEY.format(exchange=exchange.name.value)}"
+            kb = types.InlineKeyboardMarkup(row_width=1).add(
+                types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{MODULE_NAME}')
+            )
+            await SettingsForm.get_api_key.set()
+            await state.update_data({StorageDataFields.EXCHANGE_ID: exchange_id})
     elif Steps.UPDATE_BASE_COIN in callback_info:
         if callback_info == Steps.UPDATE_BASE_COIN:
             await chose_new_base_coin(message=callback_query.message)
