@@ -75,10 +75,10 @@ async def settings_menu(message: types.Message):
                 f'{"✅" if user.auto else "❌"} {bc.AUTO}',
                 callback_data=f'{MODULE_NAME}:{Steps.UPDATE_AUTO}:{int(not user.auto)}'
             ),
-            types.InlineKeyboardButton(
-                f'{"✅" if user.test_api else "❌"} {bc.TEST}',
-                callback_data=f'{MODULE_NAME}:{Steps.UPDATE_TEST_API}:{int(not user.test_api)}'
-            )
+            # types.InlineKeyboardButton(
+            #     f'{"✅" if user.test_api else "❌"} {bc.TEST}',
+            #     callback_data=f'{MODULE_NAME}:{Steps.UPDATE_TEST_API}:{int(not user.test_api)}'
+            # )
         )
 
     kb.add(

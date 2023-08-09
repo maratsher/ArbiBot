@@ -57,7 +57,7 @@ NEW_EVENT_NOTIFICATION = '🆕 <b>НОВАЯ АРБИТРАЖНАЯ СИТУАЦ
                          '<b>{exchange2_name}</b> (<b>{second_price:.4f}</b>)\n' \
                          '<b>Профит:</b> <b>{profit:.2f}</b>'
 
-STOP_AUTO_NOTIFICATION = '🛑 <b>АВТО ТОРГОВЛЯ ОСТАНОВЛЕНА</b>'
-RESTART_AUTO_NOTIFICATION = '🔄 <b>АВТО ТОРГОВЛЯ ПЕРЕЗАПУЩЕНА</b>'
+STOP_AUTO_NOTIFICATION = '🛑 <b>АВТОТОРГОВЛЯ ОСТАНОВЛЕНА</b>'
+RESTART_AUTO_NOTIFICATION = '🔄 <b>АВТОТОРГОВЛЯ ПЕРЕЗАПУЩЕНА</b>'
 
 PROFIT_NOTIFICATION = '💰 <b>ТЕКУЩИЙ ПРОФИТ: {profit} USDT</b>'
