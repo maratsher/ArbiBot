@@ -39,9 +39,15 @@ async def profit_message(telegram_id: str, profit: float):
     )
 
 
-async def debug_message(telegram_id: str, message: str):
+async def debug_message(telegram_id: str, debug_type: str, message: str):
+    if debug_type == 'INFO':
+        notification = mc.INFO_DEBUG_NOTIFICATION
+    elif debug_type == 'WARNING':
+        notification = mc.WARNING_DEBUG_NOTIFICATION
+    else:
+        notification = mc.ERROR_DEBUG_NOTIFICATION
     await bot.send_message(
-        chat_id=telegram_id, text=mc.DEBUG_NOTIFICATION.format(message=message), parse_mode=types.ParseMode.HTML
+        chat_id=telegram_id, text=notification.format(message=message), parse_mode=types.ParseMode.HTML
     )
 
 
@@ -66,5 +72,7 @@ def profit_auto(telegram_id: str, profit: float):
 
 
 @sender.task(name='debug')
-def debug(telegram_id: str, message: str):
-    asyncio.get_event_loop().run_until_complete(debug_message(telegram_id=telegram_id, message=message))
+def debug(telegram_id: str, debug_type: str, message: str):
+    asyncio.get_event_loop().run_until_complete(debug_message(
+        telegram_id=telegram_id, debug_type=debug_type, message=message
+    ))

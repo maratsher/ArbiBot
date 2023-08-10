@@ -62,4 +62,6 @@ RESTART_AUTO_NOTIFICATION = '🔄 <b>АВТОТОРГОВЛЯ ПЕРЕЗАПУЩ
 
 PROFIT_NOTIFICATION = '💰 <b>ТЕКУЩИЙ ПРОФИТ: {profit} USDT</b>'
 
-DEBUG_NOTIFICATION = '🛠 <b>ОТЛАДКА: {message}</b>'
+INFO_DEBUG_NOTIFICATION = 'ℹ️ <b>ИНФОРМАЦИЯ:</b> {message}'
+WARNING_DEBUG_NOTIFICATION = '⚠️ <b>ПРЕДУПРЕЖДЕНИЕ:</b> {message}'
+ERROR_DEBUG_NOTIFICATION = '🛑 <b>ОШИБКА:</b> {message}'
