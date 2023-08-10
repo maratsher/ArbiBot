@@ -61,3 +61,5 @@ STOP_AUTO_NOTIFICATION = '🛑 <b>АВТОТОРГОВЛЯ ОСТАНОВЛЕН�
 RESTART_AUTO_NOTIFICATION = '🔄 <b>АВТОТОРГОВЛЯ ПЕРЕЗАПУЩЕНА</b>'
 
 PROFIT_NOTIFICATION = '💰 <b>ТЕКУЩИЙ ПРОФИТ: {profit} USDT</b>'
+
+DEBUG_NOTIFICATION = '🛠 <b>ОТЛАДКА: {message}</b>'

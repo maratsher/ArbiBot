@@ -39,6 +39,12 @@ async def profit_message(telegram_id: str, profit: float):
     )
 
 
+async def debug_message(telegram_id: str, message: str):
+    await bot.send_message(
+        chat_id=telegram_id, text=mc.DEBUG_NOTIFICATION.format(message=message), parse_mode=types.ParseMode.HTML
+    )
+
+
 @sender.task(name='new_event')
 def new_event(telegram_ids: typing.List[str], message: str):
     asyncio.get_event_loop().run_until_complete(new_event_message(telegram_ids=telegram_ids, data=json.loads(message)))
@@ -57,3 +63,8 @@ def restart_auto(telegram_id: str):
 @sender.task(name='profit_auto')
 def profit_auto(telegram_id: str, profit: float):
     asyncio.get_event_loop().run_until_complete(profit_message(telegram_id=telegram_id, profit=profit))
+
+
+@sender.task(name='debug')
+def debug(telegram_id: str, message: str):
+    asyncio.get_event_loop().run_until_complete(debug_message(telegram_id=telegram_id, message=message))
