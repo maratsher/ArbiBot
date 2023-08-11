@@ -85,3 +85,7 @@ class UserExchangeUpdate(APIBase):
 
     api_key: str = Field(...)
     api_secret: str = Field(...)
+
+
+class UserAutoForceStop(APIBase):
+    telegram_id: str = Field(...)

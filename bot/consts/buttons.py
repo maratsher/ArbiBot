@@ -12,6 +12,7 @@ MY_ARBI_EVENTS = 'Мои арбитражные ситуации'
 
 SETTINGS = 'Настройки'
 AUTO = 'Авто режим'
+FORCE_STOP = 'Принудительная остановка'
 TEST = 'Тестовый режим'
 UPDATE_BASE_COIN = 'Изменить монету'
 UPDATE_VOLUME = 'Изменить объем'

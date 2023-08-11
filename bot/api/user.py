@@ -198,6 +198,20 @@ async def update_auto(data: schemas.UserAutoUpdate):
         return 1 if error == 'STOP_PROCESS_STARTED' else 2
 
 
+async def force_stop_auto(data: schemas.UserAutoForceStop):
+    """
+    Функция принудительной остановки автоматической торговли пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='post',
+        url=f'{base_config.API_URL}{ac.USERS}/force_stop',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
 async def update_wait_order_minutes(data: schemas.UserWaitOrderMinutesUpdate):
     """
     Функция обновления времени на выполнение ордера пользователя.
