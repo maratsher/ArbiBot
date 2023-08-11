@@ -6,7 +6,7 @@ from .user import (
     UserBaseCoinUpdate, UserThresholdUpdate, UserVolumeUpdate,
     UserEpsilonUpdate, UserDifferenceUpdate, UserAutoUpdate,
     UserWaitOrderMinutesUpdate, UserTestAPIUpdate, UserExchangeUpdate,
-    UserAutoForceStop
+    UserAutoForceStop, UserDebugUpdateUpdate
 )
 from .coin import CoinInDb
 from .exchange import ExchangeInDb, ExchangeName

@@ -20,6 +20,7 @@ class UserInDb(APIBase):
     auto: bool
     test_api: bool
     wait_order_minutes: int
+    debug_mode: int
 
 
 class UserCreate(APIBase):
@@ -89,3 +90,9 @@ class UserExchangeUpdate(APIBase):
 
 class UserAutoForceStop(APIBase):
     telegram_id: str = Field(...)
+
+
+class UserDebugUpdateUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    debug_mode: bool = Field(...)

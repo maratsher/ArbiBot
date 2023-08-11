@@ -198,6 +198,20 @@ async def update_auto(data: schemas.UserAutoUpdate):
         return 1 if error == 'STOP_PROCESS_STARTED' else 2
 
 
+async def update_debug_mode(data: schemas.UserDebugUpdateUpdate):
+    """
+    Функция обновления режима отладки пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/debug_mode',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
 async def force_stop_auto(data: schemas.UserAutoForceStop):
     """
     Функция принудительной остановки автоматической торговли пользователя.

@@ -37,6 +37,7 @@ class Steps:
     UPDATE_WAIT_ORDER = 'update_wait_order'
     UPDATE_TEST_API = 'update_test_api'
     UPDATE_EXCHANGES = 'update_exchanges'
+    UPDATE_DEBUG_MODE = 'update_debug_mode'
     FORCE_STOP_AUTO = 'force_stop_auto'
     BACK = 'back'
 
@@ -79,7 +80,11 @@ async def settings_menu(message: types.Message):
             # types.InlineKeyboardButton(
             #     f'{"✅" if user.test_api else "❌"} {bc.TEST}',
             #     callback_data=f'{MODULE_NAME}:{Steps.UPDATE_TEST_API}:{int(not user.test_api)}'
-            # )
+            # ),
+            types.InlineKeyboardButton(
+                f'{"✅" if user.debug_mode else "❌"} {bc.DEBUG}',
+                callback_data=f'{MODULE_NAME}:{Steps.UPDATE_DEBUG_MODE}:{int(not user.debug_mode)}'
+            )
         )
 
     kb.add(
@@ -431,6 +436,13 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
             )
         else:
             await settings_menu(message=callback_query.message)
+    elif Steps.UPDATE_DEBUG_MODE in callback_info:
+        telegram_id = str(callback_query.message.chat.id)
+        debug_mode = int(callback_info.replace(f'{Steps.UPDATE_DEBUG_MODE}:', ''))
+        await user_api.update_debug_mode(
+            data=schemas.UserDebugUpdateUpdate(telegram_id=telegram_id, debug_mode=debug_mode)
+        )
+        await settings_menu(message=callback_query.message)
     elif callback_info == Steps.FORCE_STOP_AUTO:
         telegram_id = str(callback_query.message.chat.id)
         result = await user_api.force_stop_auto(data=schemas.UserAutoForceStop(telegram_id=telegram_id))
