@@ -93,7 +93,7 @@ async def settings_menu(message: types.Message):
         types.InlineKeyboardButton(bc.UPDATE_VOLUME, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_VOLUME}'),
         types.InlineKeyboardButton(bc.UPDATE_THRESHOLD, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_THRESHOLD}'),
         types.InlineKeyboardButton(bc.UPDATE_EPSILON, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_EPSILON}'),
-        types.InlineKeyboardButton(bc.UPDATE_DIFFERENCE, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_DIFFERENCE}'),
+        # types.InlineKeyboardButton(bc.UPDATE_DIFFERENCE, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_DIFFERENCE}'),
         types.InlineKeyboardButton(bc.UPDATE_WAIT_ORDER, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_WAIT_ORDER}'),
         types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}')
     )
@@ -101,10 +101,10 @@ async def settings_menu(message: types.Message):
     settings_info = mc.SETTINGS_INFO.format(
         auto_info_text='' if exchanges_success else mc.SETTINGS_AUTO_INFO,
         base_coin_name=f"{user.base_coin.name} ({user.base_coin.ticker})",
-        volume=f"{user.volume} {user.base_coin.ticker}",
+        volume=f"{user.volume} FLOW",
         threshold=f"{user.threshold} {user.base_coin.ticker}",
         epsilon=f"{user.epsilon} {user.base_coin.ticker}",
-        difference=f"{user.difference} %",
+        # difference=f"{user.difference} %",
         wait_order_minutes=f"{user.wait_order_minutes} мин."
     )
 

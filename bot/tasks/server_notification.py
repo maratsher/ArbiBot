@@ -1,3 +1,4 @@
+import datetime
 import json
 import typing
 
@@ -39,6 +40,18 @@ async def profit_message(telegram_id: str, profit: float):
     )
 
 
+async def order_not_executed_time_message(telegram_id: str, exchange: str, order: str, time: str):
+    await bot.send_message(
+        chat_id=telegram_id,
+        text=mc.ORDER_NOT_EXECUTED_TIME_NOTIFICATION.format(
+            exchange=exchange,
+            order=order,
+            time=time
+        ),
+        parse_mode=types.ParseMode.HTML
+    )
+
+
 async def debug_message(telegram_id: str, debug_type: str, message: str):
     if debug_type == 'INFO':
         notification = mc.INFO_DEBUG_NOTIFICATION
@@ -66,9 +79,16 @@ def restart_auto(telegram_id: str):
     asyncio.get_event_loop().run_until_complete(restart_message(telegram_id=telegram_id))
 
 
-@sender.task(name='profit_auto')
+@sender.task(name='profit')
 def profit_auto(telegram_id: str, profit: float):
     asyncio.get_event_loop().run_until_complete(profit_message(telegram_id=telegram_id, profit=profit))
+
+
+@sender.task(name='order_not_executed_time')
+def order_not_executed_time(telegram_id: str, exchange: str, order: str, time: str):
+    asyncio.get_event_loop().run_until_complete(
+        order_not_executed_time_message(telegram_id=telegram_id, exchange=exchange, order=order, time=time)
+    )
 
 
 @sender.task(name='debug')

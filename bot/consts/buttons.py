@@ -10,7 +10,7 @@ DELETE_BUNDLE = 'Удалить'
 BUNDLE_RATING = 'Рейтинг связок за день'
 MY_ARBI_EVENTS = 'Мои арбитражные ситуации'
 
-SETTINGS = 'Настройки'
+SETTINGS = 'Параллельный арбитраж'
 AUTO = 'Авто режим'
 DEBUG = 'Отладка'
 FORCE_STOP = 'Принудительная остановка'

@@ -9,12 +9,11 @@ START_TEXT = 'Добро пожаловать в <b>ArbiBot</b> - бот для 
 
 START_TITLE = '🏦 <b>ОСНОВНОЕ МЕНЮ</b>'
 
-SETTINGS_TITLE = '⚙️ <b>НАСТРОЙКИ</b>'
+SETTINGS_TITLE = '⚙️ <b>ПАРАЛЛЕЛЬНЫЙ АРБИТРАЖ</b>'
 SETTINGS_INFO = ('Расчетная монета: <b>{base_coin_name}</b>\n'
                  'Объем торгов: <b>{volume}</b>\n'
                  'Порог: <b>{threshold}</b>\n'
                  'Погрешность: <b>{epsilon}</b>\n'
-                 'Разница балансов: <b>{difference}</b>\n'
                  'Время ордера: <b>{wait_order_minutes}</b>'
                  '{auto_info_text}')
 SETTINGS_BASE_COIN = 'Выберите новую расчетную монету'
@@ -64,7 +63,12 @@ NEW_EVENT_NOTIFICATION = '🆕 <b>НОВАЯ АРБИТРАЖНАЯ СИТУАЦ
 STOP_AUTO_NOTIFICATION = '🛑 <b>АВТОТОРГОВЛЯ ОСТАНОВЛЕНА</b>'
 RESTART_AUTO_NOTIFICATION = '🔄 <b>АВТОТОРГОВЛЯ ПЕРЕЗАПУЩЕНА</b>'
 
-PROFIT_NOTIFICATION = '💰 <b>ТЕКУЩИЙ ПРОФИТ: {profit} USDT</b>'
+ORDER_NOT_EXECUTED_TIME_NOTIFICATION = ('🕘 <b>ДОЛГОЕ ОЖИДАНИЕ ИСПОЛНЕНИЯ ОРДЕРА</b>\n'
+                                        '<b>БИРЖА:</b> {exchange}\n'
+                                        '<b>ОРДЕР:</b> {order}\n'
+                                        '<b>ВРЕМЯ:</b> {time}')
+
+PROFIT_NOTIFICATION = '💰 <b>ПРОФИТ: {profit}</b>'
 
 INFO_DEBUG_NOTIFICATION = 'ℹ️ <b>ИНФОРМАЦИЯ:</b> {message}'
 WARNING_DEBUG_NOTIFICATION = '⚠️ <b>ПРЕДУПРЕЖДЕНИЕ:</b> {message}'
