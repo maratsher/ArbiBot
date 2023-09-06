@@ -367,6 +367,8 @@ async def get_api_secret(message: types.Message, state: FSMContext):
     await data[StorageDataFields.LAST_MESSAGE].answer(text=text, parse_mode=types.ParseMode.HTML)
     await settings_menu(data[StorageDataFields.LAST_MESSAGE])
 
+    await state.finish()
+
 
 @dp.callback_query_handler(
     lambda c: c.data and c.data.startswith(MODULE_NAME),

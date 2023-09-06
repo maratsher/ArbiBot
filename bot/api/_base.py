@@ -52,8 +52,9 @@ async def request(
                         async for data, _ in response.content.iter_chunks():
                             error_message += data
 
-                    error_message = json_lib.loads(error_message.decode('utf-8'))
-                    error_message = error_message['detail']
+                    if error_message:
+                        error_message = json_lib.loads(error_message.decode('utf-8'))
+                        error_message = error_message['detail']
 
                     return response, error_message
                 result = await response.json(content_type=None) if response.status == 200 else None
