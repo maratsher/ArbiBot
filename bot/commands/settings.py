@@ -30,6 +30,7 @@ MODULE_NAME = 'settings'
 class Steps:
     UPDATE_AUTO = 'update_auto'
     UPDATE_BASE_COIN = 'update_base_coin'
+    UPDATE_TARGET_COIN = 'update_target_coin'
     UPDATE_VOLUME = 'update_volume'
     UPDATE_THRESHOLD = 'update_threshold'
     UPDATE_EPSILON = 'update_epsilon'
@@ -90,6 +91,7 @@ async def settings_menu(message: types.Message):
     kb.add(
         types.InlineKeyboardButton(bc.UPDATE_EXCHANGES, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_EXCHANGES}'),
         types.InlineKeyboardButton(bc.UPDATE_BASE_COIN, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_BASE_COIN}'),
+        types.InlineKeyboardButton(bc.UPDATE_TARGET_COIN, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_TARGET_COIN}'),
         types.InlineKeyboardButton(bc.UPDATE_VOLUME, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_VOLUME}'),
         types.InlineKeyboardButton(bc.UPDATE_THRESHOLD, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_THRESHOLD}'),
         types.InlineKeyboardButton(bc.UPDATE_EPSILON, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_EPSILON}'),
@@ -101,7 +103,8 @@ async def settings_menu(message: types.Message):
     settings_info = mc.SETTINGS_INFO.format(
         auto_info_text='' if exchanges_success else mc.SETTINGS_AUTO_INFO,
         base_coin_name=f"{user.base_coin.name} ({user.base_coin.ticker})",
-        volume=f"{user.volume} FLOW",
+        target_coin_name=f"{user.target_coin.name} ({user.target_coin.ticker})",
+        volume=f"{user.volume} {user.target_coin.ticker}",
         threshold=f"{user.threshold} {user.base_coin.ticker}",
         epsilon=f"{user.epsilon} {user.base_coin.ticker}",
         # difference=f"{user.difference} %",
@@ -137,7 +140,7 @@ async def chose_exchange(message: types.Message):
     await message.edit_text(text=text, reply_markup=kb, parse_mode=types.ParseMode.HTML)
 
 
-async def chose_new_base_coin(message: types.Message):
+async def chose_new_coin(message: types.Message, step: str):
     """
     Функция обработки меню выбора новой расчетной монеты
     """
@@ -147,7 +150,7 @@ async def chose_new_base_coin(message: types.Message):
 
     for coin in coins:
         kb.insert(types.InlineKeyboardButton(
-            coin.ticker, callback_data=f'{MODULE_NAME}:{Steps.UPDATE_BASE_COIN}:{coin.id}'
+            coin.ticker, callback_data=f'{MODULE_NAME}:{step}:{coin.id}'
         ))
 
     kb.add(types.InlineKeyboardButton(bc.BACK, callback_data=f'{MODULE_NAME}:{Steps.BACK}:{MODULE_NAME}'))
@@ -416,12 +419,22 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
             await state.update_data({StorageDataFields.EXCHANGE_ID: exchange_id})
     elif Steps.UPDATE_BASE_COIN in callback_info:
         if callback_info == Steps.UPDATE_BASE_COIN:
-            await chose_new_base_coin(message=callback_query.message)
+            await chose_new_coin(message=callback_query.message, step=Steps.UPDATE_BASE_COIN)
         else:
             telegram_id = str(callback_query.message.chat.id)
             base_coin_id = int(callback_info.replace(f'{Steps.UPDATE_BASE_COIN}:', ''))
             await user_api.update_base_coin(
                 data=schemas.UserBaseCoinUpdate(telegram_id=telegram_id, base_coin_id=base_coin_id)
+            )
+            await settings_menu(message=callback_query.message)
+    elif Steps.UPDATE_TARGET_COIN in callback_info:
+        if callback_info == Steps.UPDATE_TARGET_COIN:
+            await chose_new_coin(message=callback_query.message, step=Steps.UPDATE_TARGET_COIN)
+        else:
+            telegram_id = str(callback_query.message.chat.id)
+            target_coin_id = int(callback_info.replace(f'{Steps.UPDATE_TARGET_COIN}:', ''))
+            await user_api.update_target_coin(
+                data=schemas.UserTargetCoinUpdate(telegram_id=telegram_id, target_coin_id=target_coin_id)
             )
             await settings_menu(message=callback_query.message)
     elif Steps.UPDATE_AUTO in callback_info:

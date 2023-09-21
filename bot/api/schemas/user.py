@@ -13,6 +13,7 @@ class UserInDb(APIBase):
 
     telegram_id: str
     base_coin: CoinInDb
+    target_coin: CoinInDb
     threshold: float
     volume: float
     epsilon: float
@@ -35,6 +36,12 @@ class UserBaseCoinUpdate(APIBase):
     telegram_id: str = Field(...)
 
     base_coin_id: int = Field(..., ge=1, le=db_config.MAX_LEN_ID)
+
+
+class UserTargetCoinUpdate(APIBase):
+    telegram_id: str = Field(...)
+
+    target_coin_id: int = Field(..., ge=1, le=db_config.MAX_LEN_ID)
 
 
 class UserThresholdUpdate(APIBase):
