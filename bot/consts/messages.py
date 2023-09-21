@@ -62,6 +62,7 @@ NEW_EVENT_NOTIFICATION = '🆕 <b>НОВАЯ АРБИТРАЖНАЯ СИТУАЦ
 
 STOP_AUTO_NOTIFICATION = '🛑 <b>АВТОТОРГОВЛЯ ОСТАНОВЛЕНА</b>'
 RESTART_AUTO_NOTIFICATION = '🔄 <b>АВТОТОРГОВЛЯ ПЕРЕЗАПУЩЕНА</b>'
+NEED_TRANSFER_NOTIFICATION = '💸 <b>НЕОБХОДИМО ПЕРЕВЕСТИ МОНЕТЫ МЕЖДУ БИРЖАМИ</b>'
 
 ORDER_NOT_EXECUTED_TIME_NOTIFICATION = ('🕘 <b>ДОЛГОЕ ОЖИДАНИЕ ИСПОЛНЕНИЯ ОРДЕРА</b>\n'
                                         '<b>БИРЖА:</b> {exchange}\n'

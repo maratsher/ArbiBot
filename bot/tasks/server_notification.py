@@ -64,6 +64,10 @@ async def debug_message(telegram_id: str, debug_type: str, message: str):
     )
 
 
+async def need_transfer_message(telegram_id: str):
+    await bot.send_message(chat_id=telegram_id, text=mc.NEED_TRANSFER_NOTIFICATION, parse_mode=types.ParseMode.HTML)
+
+
 @sender.task(name='new_event')
 def new_event(telegram_ids: typing.List[str], message: str):
     asyncio.get_event_loop().run_until_complete(new_event_message(telegram_ids=telegram_ids, data=json.loads(message)))
@@ -96,3 +100,8 @@ def debug(telegram_id: str, debug_type: str, message: str):
     asyncio.get_event_loop().run_until_complete(debug_message(
         telegram_id=telegram_id, debug_type=debug_type, message=message
     ))
+
+
+@sender.task(name='need_transfer')
+def need_transfer(telegram_id: str):
+    asyncio.get_event_loop().run_until_complete(need_transfer_message(telegram_id=telegram_id))
