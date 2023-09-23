@@ -442,13 +442,7 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
         auto = int(callback_info.replace(f'{Steps.UPDATE_AUTO}:', ''))
         result = await user_api.update_auto(data=schemas.UserAutoUpdate(telegram_id=telegram_id, auto=auto))
         if result == 1:
-            await callback_query.message.delete()
-            kb = types.InlineKeyboardMarkup(row_width=1).add(
-                types.InlineKeyboardButton(bc.FORCE_STOP, callback_data=f'{MODULE_NAME}:{Steps.FORCE_STOP_AUTO}')
-            )
-            await callback_query.message.answer(
-                text=mc.SETTINGS_AUTO_SOFT_STOP_PROCESS_STARTED, reply_markup=kb, parse_mode=types.ParseMode.HTML
-            )
+            text = mc.SETTINGS_AUTO_FORCE_STOP_PROCESS_STARTED
         else:
             await settings_menu(message=callback_query.message)
     elif Steps.UPDATE_DEBUG_MODE in callback_info:
@@ -458,13 +452,6 @@ async def callback(callback_query: types.CallbackQuery, state: FSMContext):
             data=schemas.UserDebugUpdateUpdate(telegram_id=telegram_id, debug_mode=debug_mode)
         )
         await settings_menu(message=callback_query.message)
-    elif callback_info == Steps.FORCE_STOP_AUTO:
-        telegram_id = str(callback_query.message.chat.id)
-        result = await user_api.force_stop_auto(data=schemas.UserAutoForceStop(telegram_id=telegram_id))
-        if result:
-            await callback_query.message.edit_text(
-                text=mc.SETTINGS_AUTO_FORCE_STOP_PROCESS_STARTED, parse_mode=types.ParseMode.HTML
-            )
     elif Steps.UPDATE_TEST_API in callback_info:
         telegram_id = str(callback_query.message.chat.id)
         test_api = int(callback_info.replace(f'{Steps.UPDATE_TEST_API}:', ''))
