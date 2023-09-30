@@ -12,15 +12,16 @@ class UserInDb(APIBase):
     id: int
 
     telegram_id: str
-    base_coin: CoinInDb
+
     target_coin: CoinInDb
     threshold: float
+    init_volume: float
     volume: float
     epsilon: float
-    difference: float
-    auto: bool
-    test_api: bool
     wait_order_minutes: int
+
+    auto: bool
+
     debug_mode: int
 
 
@@ -30,12 +31,6 @@ class UserCreate(APIBase):
 
 class UserBundleAdd(APIBase):
     bundle_id: int = Field(..., ge=1, le=db_config.MAX_LEN_ID)
-
-
-class UserBaseCoinUpdate(APIBase):
-    telegram_id: str = Field(...)
-
-    base_coin_id: int = Field(..., ge=1, le=db_config.MAX_LEN_ID)
 
 
 class UserTargetCoinUpdate(APIBase):
@@ -62,12 +57,6 @@ class UserEpsilonUpdate(APIBase):
     epsilon: float = Field(..., gt=0, le=db_config.MAX_EPSILON)
 
 
-class UserDifferenceUpdate(APIBase):
-    telegram_id: str = Field(...)
-
-    difference: float = Field(..., gt=0, le=db_config.MAX_DIFFERENCE)
-
-
 class UserAutoUpdate(APIBase):
     telegram_id: str = Field(...)
 
@@ -77,7 +66,7 @@ class UserAutoUpdate(APIBase):
 class UserWaitOrderMinutesUpdate(APIBase):
     telegram_id: str = Field(...)
 
-    wait_order_minutes: float = Field(..., gt=0, le=db_config.MAX_DIFFERENCE)
+    wait_order_minutes: float = Field(..., gt=0, le=db_config.MAX_WAIT_ORDER_MINUTES)
 
 
 class UserTestAPIUpdate(APIBase):

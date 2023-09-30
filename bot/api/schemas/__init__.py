@@ -3,7 +3,7 @@
 """
 from .user import (
     UserInDb, UserCreate, UserBundleAdd,
-    UserBaseCoinUpdate, UserThresholdUpdate, UserVolumeUpdate,
+    UserThresholdUpdate, UserVolumeUpdate,
     UserEpsilonUpdate, UserDifferenceUpdate, UserAutoUpdate,
     UserWaitOrderMinutesUpdate, UserTestAPIUpdate, UserExchangeUpdate,
     UserAutoForceStop, UserDebugUpdateUpdate, UserTargetCoinUpdate

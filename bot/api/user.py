@@ -110,20 +110,6 @@ async def update_exchange(data: schemas.UserExchangeUpdate):
     return response.status == 200
 
 
-async def update_base_coin(data: schemas.UserBaseCoinUpdate):
-    """
-    Функция обновления расчетной монеты пользователя.
-
-    :param data: схема
-    """
-    response, _ = await _base.request(
-        method='put',
-        url=f'{base_config.API_URL}{ac.USERS}/base_coin_id',
-        json=data.dict()
-    )
-    return response.status == 200
-
-
 async def update_target_coin(data: schemas.UserTargetCoinUpdate):
     """
     Функция обновления целевой монеты пользователя.
@@ -133,6 +119,20 @@ async def update_target_coin(data: schemas.UserTargetCoinUpdate):
     response, _ = await _base.request(
         method='put',
         url=f'{base_config.API_URL}{ac.USERS}/target_coin_id',
+        json=data.dict()
+    )
+    return response.status == 200
+
+
+async def update_init_volume(data: schemas.UserVolumeUpdate):
+    """
+    Функция обновления объема закупки пользователя.
+
+    :param data: схема
+    """
+    response, _ = await _base.request(
+        method='put',
+        url=f'{base_config.API_URL}{ac.USERS}/init_volume',
         json=data.dict()
     )
     return response.status == 200
