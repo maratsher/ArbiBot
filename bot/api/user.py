@@ -180,20 +180,6 @@ async def update_epsilon(data: schemas.UserEpsilonUpdate):
     return response.status == 200
 
 
-async def update_difference(data: schemas.UserDifferenceUpdate):
-    """
-    Функция обновления максимально допустимого процента различия балансов пользователя.
-
-    :param data: схема
-    """
-    response, _ = await _base.request(
-        method='put',
-        url=f'{base_config.API_URL}{ac.USERS}/difference',
-        json=data.dict()
-    )
-    return response.status == 200
-
-
 async def update_auto(data: schemas.UserAutoUpdate):
     """
     Функция обновления автоматической торговли пользователя.

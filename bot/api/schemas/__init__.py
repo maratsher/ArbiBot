@@ -4,7 +4,7 @@
 from .user import (
     UserInDb, UserCreate, UserBundleAdd,
     UserThresholdUpdate, UserVolumeUpdate,
-    UserEpsilonUpdate, UserDifferenceUpdate, UserAutoUpdate,
+    UserEpsilonUpdate, UserAutoUpdate,
     UserWaitOrderMinutesUpdate, UserTestAPIUpdate, UserExchangeUpdate,
     UserAutoForceStop, UserDebugUpdateUpdate, UserTargetCoinUpdate
 )
