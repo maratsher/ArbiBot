@@ -27,9 +27,9 @@ async def start_menu(message: types.Message, edit: bool = False):
     :param edit: Изменить сообщение.
     """
     kb = types.InlineKeyboardMarkup(row_width=1).add(
-        types.InlineKeyboardButton(bc.BUNDLE_RATING, callback_data=f'{MODULE_NAME}:{Steps.BUNDLE_RATING}'),
-        types.InlineKeyboardButton(bc.MY_ARBI_EVENTS, callback_data=f'{MODULE_NAME}:{Steps.MY_ARBI_EVENTS}'),
-        types.InlineKeyboardButton(bc.BUNDLES, callback_data=f'{MODULE_NAME}:{Steps.BUNDLES}'),
+        # types.InlineKeyboardButton(bc.BUNDLE_RATING, callback_data=f'{MODULE_NAME}:{Steps.BUNDLE_RATING}'),
+        # types.InlineKeyboardButton(bc.MY_ARBI_EVENTS, callback_data=f'{MODULE_NAME}:{Steps.MY_ARBI_EVENTS}'),
+        # types.InlineKeyboardButton(bc.BUNDLES, callback_data=f'{MODULE_NAME}:{Steps.BUNDLES}'),
         types.InlineKeyboardButton(bc.SETTINGS, callback_data=f'{MODULE_NAME}:{Steps.SETTINGS}')
     )
 
